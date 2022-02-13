@@ -1,14 +1,15 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useMatch,Link } from "react-router-dom";
-const Nav = styled.nav`
+import { useEffect, useState } from "react";
+const Nav = styled(motion.nav)`
     display:flex;
     justify-content: space-between;
   align-items: center;
   position: fixed;
   width: 100%;
   top: 0;
-  background-color: rgb(20, 20, 20);
+  background:linear-gradient(to top,rgba(20,20,20,0),rgba(20,20,20,0.7));
   font-size: 14px;
   padding: 20px 60px;
   color: white;
@@ -49,18 +50,42 @@ const Item = styled.li<{matched:boolean}>`
 
 const Search = styled.span`
   color: white;
+  display:flex;
+  align-items: center;
+  position: relative;
   svg {
     height: 25px;
   }
 `;
 
+const Input = styled(motion.input)`
+    transform-origin: right center;
+    position  : absolute;
+    left:-175px;
+`;
+
 
 const Header = () => {
+    const [searchOpen,setSearchOpen] = useState<boolean>(false);
+    const [scrollY,setScrollY] = useState<number>(0);
     const homeMatch = useMatch("/");
     const tvMatch = useMatch("/tv");
-    console.log(homeMatch);
+    const scrolling =()=> {
+        setScrollY(window.scrollY);
+    }
+    useEffect(()=>{
+        window.addEventListener('scroll',scrolling);
+        return ()=>{
+            window.removeEventListener('scroll',scrolling);
+        }
+    },[]);
+    
+    const openSearch = () => setSearchOpen((prev)=>!prev);
     return (
-        <Nav>
+        <Nav 
+        animate={{background:scrollY > 0 ? 'linear-gradient(to top,rgba(20,20,20,1),rgba(20,20,20,1))' : 'linear-gradient(to top,rgba(20,20,20,0),rgba(20,20,20,0.7))'}}
+        transition={{duration:0.4}}
+        >
             <Col>
                 <Logo
                     xmlns="http://www.w3.org/2000/svg"
@@ -81,8 +106,10 @@ const Header = () => {
                 </Items>
             </Col>
             <Col>
-                <Search>
-                    <svg
+                <Search onClick={openSearch}>
+                    <motion.svg
+                        animate={{x:searchOpen?-200:0}}
+                        transition={{type:"linear"}}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +119,12 @@ const Header = () => {
                             d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                             clipRule="evenodd"
                         ></path>
-                    </svg>
+                    </motion.svg>
+                    <Input 
+                    animate={{scaleX:searchOpen ?1:0}}
+                    transition={{type:"linear"}}
+                    placeholder="Search for movie or tv show..."
+                    />
                 </Search>
             </Col>
         </Nav>
