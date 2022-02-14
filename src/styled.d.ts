@@ -14,3 +14,15 @@ declare module "styled-componenets" {
         };
     }
 }
+export interface IDefaultTheme {
+    red:string;
+    black:{
+        veryDark:string;
+        darker:string;
+        lighter:string;
+    };
+    white: {
+        darker:string;
+        lighter:string;
+    };
+}
