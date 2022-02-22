@@ -19,6 +19,7 @@ const GlobalStyle = createGlobalStyle<{theme:IDefaultTheme}>`
   body {
     color:${(props) => props.theme.white.darker};
     background-color: rgb(20,20,20);
+    overflow-x: hidden;
   }
 `;
 
